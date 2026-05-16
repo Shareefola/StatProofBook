@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Exclude the Room database from backup (rebuilt from bundled assets) -->
+    <exclude domain="database" path="statproof.db" />
+    <exclude domain="database" path="statproof.db-shm" />
+    <exclude domain="database" path="statproof.db-wal" />
+</full-backup-content>

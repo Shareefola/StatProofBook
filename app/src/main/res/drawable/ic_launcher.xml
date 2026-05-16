@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Background circle -->
+    <path
+        android:fillColor="#3F51B5"
+        android:pathData="M0,0 L108,0 L108,108 L0,108 Z" />
+
+    <!-- Sigma symbol (∑) representing statistical sums -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M28,24 L80,24 L80,32 L44,54 L80,76 L80,84 L28,84 L28,76 L68,76 L34,54 L68,32 L28,32 Z" />
+
+</vector>

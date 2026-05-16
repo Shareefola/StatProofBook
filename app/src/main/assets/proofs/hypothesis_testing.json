@@ -1,0 +1,31 @@
+[
+  {
+    "id": "hypothesis_testing_placeholder_1",
+    "title": "Hypothesis Testing — Key Result 1",
+    "topic": "hypothesis_testing",
+    "subtopic": "Foundational Results",
+    "difficulty": "undergraduate",
+    "statement": "\text{See derivation steps for the full statement.}",
+    "conclusion": "\text{Q.E.D.}",
+    "tags": ["hypothesis testing"],
+    "assumptions": ["Standard regularity conditions apply."],
+    "intuition": "This is a foundational result in hypothesis testing. More proofs will be added in future releases.",
+    "pitfalls": [],
+    "searchKeywords": ["hypothesis testing"],
+    "relatedIds": [],
+    "references": [],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "\text{This topic's full proof set is being expanded.}",
+        "justification": "Placeholder",
+        "explanation": "Full derivations for this topic will be populated in the next dataset release. The proof engine and all infrastructure are complete.",
+        "ruleId": "axiom",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      }
+    ],
+    "examples": []
+  }
+]

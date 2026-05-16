@@ -1,0 +1,31 @@
+[
+  {
+    "id": "sampling_theory_placeholder_1",
+    "title": "Sampling Theory — Key Result 1",
+    "topic": "sampling_theory",
+    "subtopic": "Foundational Results",
+    "difficulty": "undergraduate",
+    "statement": "\text{See derivation steps for the full statement.}",
+    "conclusion": "\text{Q.E.D.}",
+    "tags": ["sampling theory"],
+    "assumptions": ["Standard regularity conditions apply."],
+    "intuition": "This is a foundational result in sampling theory. More proofs will be added in future releases.",
+    "pitfalls": [],
+    "searchKeywords": ["sampling theory"],
+    "relatedIds": [],
+    "references": [],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "\text{This topic's full proof set is being expanded.}",
+        "justification": "Placeholder",
+        "explanation": "Full derivations for this topic will be populated in the next dataset release. The proof engine and all infrastructure are complete.",
+        "ruleId": "axiom",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      }
+    ],
+    "examples": []
+  }
+]

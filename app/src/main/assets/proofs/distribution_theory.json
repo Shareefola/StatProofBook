@@ -1,0 +1,238 @@
+[
+  {
+    "id": "dist_normal_mgf",
+    "title": "MGF of the Normal Distribution",
+    "topic": "distribution_theory",
+    "subtopic": "Normal Distribution",
+    "difficulty": "undergraduate",
+    "statement": "\\text{If } X \\sim \\mathcal{N}(\\mu, \\sigma^2), \\text{ then } M_X(t) = \\exp\\!\\left(\\mu t + \\tfrac{1}{2}\\sigma^2 t^2\\right)",
+    "conclusion": "M_X(t) = \\exp\\!\\left(\\mu t + \\tfrac{1}{2}\\sigma^2 t^2\\right)",
+    "tags": ["normal distribution", "MGF", "moment generating function", "Gaussian"],
+    "assumptions": [
+      "X \\sim \\mathcal{N}(\\mu, \\sigma^2)",
+      "t \\in \\mathbb{R}",
+      "\\sigma^2 > 0"
+    ],
+    "intuition": "The MGF of a Gaussian is itself Gaussian-shaped in the exponent. This makes the normal distribution closed under linear transformations and summation.",
+    "pitfalls": ["The MGF exists for all t ∈ ℝ for the normal — this is not true of all distributions (e.g., Cauchy has no MGF)."],
+    "searchKeywords": ["normal MGF", "Gaussian moment generating function", "normal distribution", "exp mu t sigma squared"],
+    "relatedIds": ["dist_normal_mean_variance", "inference_clt"],
+    "references": ["Casella, G. & Berger, R. L. (2002). Statistical Inference. 2nd ed."],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "M_X(t) = \\mathbb{E}[e^{tX}] = \\int_{-\\infty}^{\\infty} e^{tx} \\cdot \\frac{1}{\\sqrt{2\\pi\\sigma^2}} \\exp\\!\\left(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\right) dx",
+        "justification": "Definition of MGF",
+        "explanation": "The moment generating function is E[e^{tX}], computed by integrating e^{tx} against the normal density.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": ["The normal density is f(x) = (2πσ²)^{-1/2} exp(-(x-μ)²/(2σ²))"],
+        "substeps": []
+      },
+      {
+        "stepNumber": 2,
+        "expression": "= \\frac{1}{\\sqrt{2\\pi\\sigma^2}} \\int_{-\\infty}^{\\infty} \\exp\\!\\left(tx - \\frac{(x-\\mu)^2}{2\\sigma^2}\\right) dx",
+        "justification": "Combining Exponentials",
+        "explanation": "Multiplying e^{tx} and the density's exponential combines into a single exp(·).",
+        "ruleId": "exp_sum",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 3,
+        "expression": "tx - \\frac{(x-\\mu)^2}{2\\sigma^2} = -\\frac{1}{2\\sigma^2}\\left[(x-\\mu)^2 - 2\\sigma^2 tx\\right]",
+        "justification": "Factoring the Exponent",
+        "explanation": "Grouping terms over the common denominator 2σ² prepares for completing the square.",
+        "ruleId": "mul_one",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 4,
+        "expression": "= -\\frac{1}{2\\sigma^2}\\left[(x - (\\mu + \\sigma^2 t))^2 - (\\mu + \\sigma^2 t)^2 + \\mu^2\\right]",
+        "justification": "Complete the Square",
+        "explanation": "Completing the square in x: (x-μ)² - 2σ²tx = (x-(μ+σ²t))² - (μ+σ²t)² + μ².",
+        "ruleId": "complete_the_square",
+        "assumptions": [],
+        "hints": [
+          "Let ν = μ + σ²t. Then (x-μ)² - 2σ²tx = (x-ν)² - ν² + μ².",
+          "Expand (x-ν)² = x² - 2νx + ν² and verify."
+        ],
+        "substeps": [
+          {
+            "stepNumber": 1,
+            "expression": "(x-\\mu)^2 - 2\\sigma^2 tx = x^2 - 2\\mu x + \\mu^2 - 2\\sigma^2 tx",
+            "justification": "Expand (x-μ)²",
+            "explanation": "Expanding (x-μ)² = x² - 2μx + μ².",
+            "ruleId": "power_product",
+            "assumptions": [], "hints": [], "substeps": []
+          },
+          {
+            "stepNumber": 2,
+            "expression": "= x^2 - 2(\\mu + \\sigma^2 t)x + \\mu^2",
+            "justification": "Collect x terms",
+            "explanation": "Combining -2μx and -2σ²tx gives -2(μ+σ²t)x.",
+            "ruleId": "add_zero",
+            "assumptions": [], "hints": [], "substeps": []
+          },
+          {
+            "stepNumber": 3,
+            "expression": "= \\left[x - (\\mu + \\sigma^2 t)\\right]^2 - (\\mu + \\sigma^2 t)^2 + \\mu^2",
+            "justification": "Complete the Square",
+            "explanation": "Adding and subtracting (μ+σ²t)² completes the square.",
+            "ruleId": "complete_the_square",
+            "assumptions": [], "hints": [], "substeps": []
+          }
+        ]
+      },
+      {
+        "stepNumber": 5,
+        "expression": "M_X(t) = \\exp\\!\\left(\\mu t + \\tfrac{1}{2}\\sigma^2 t^2\\right) \\cdot \\underbrace{\\frac{1}{\\sqrt{2\\pi\\sigma^2}} \\int_{-\\infty}^{\\infty} \\exp\\!\\left(-\\frac{(x-(\\mu+\\sigma^2 t))^2}{2\\sigma^2}\\right) dx}_{=\\,1}",
+        "justification": "Separating the Constant Factor",
+        "explanation": "The remaining integral is exactly the integral of a N(μ+σ²t, σ²) density over ℝ, which equals 1.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": ["The integral of any normal density over ℝ equals 1 by normalisation."],
+        "substeps": []
+      },
+      {
+        "stepNumber": 6,
+        "expression": "M_X(t) = \\exp\\!\\left(\\mu t + \\tfrac{1}{2}\\sigma^2 t^2\\right)",
+        "justification": "Normalisation of Normal Density",
+        "explanation": "Since the bracketed integral equals 1, we obtain the final result.",
+        "ruleId": "mul_one",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      }
+    ],
+    "examples": [
+      {
+        "title": "Standard Normal",
+        "setup": "For X ~ N(0,1), what is M_X(t)?",
+        "solution": "Setting μ=0, σ²=1: M_X(t) = exp(t²/2).",
+        "distribution": "Standard Normal"
+      }
+    ]
+  },
+  {
+    "id": "dist_poisson_mgf",
+    "title": "MGF of the Poisson Distribution",
+    "topic": "distribution_theory",
+    "subtopic": "Poisson Distribution",
+    "difficulty": "undergraduate",
+    "statement": "\\text{If } X \\sim \\text{Poisson}(\\lambda), \\text{ then } M_X(t) = \\exp\\!\\left(\\lambda(e^t - 1)\\right)",
+    "conclusion": "M_X(t) = \\exp\\!\\left(\\lambda(e^t - 1)\\right)",
+    "tags": ["poisson", "MGF", "moment generating function", "discrete distribution"],
+    "assumptions": ["X \\sim \\text{Poisson}(\\lambda)", "\\lambda > 0", "t \\in \\mathbb{R}"],
+    "intuition": "The Poisson MGF reveals its exponential family structure and confirms E[X] = Var(X) = λ.",
+    "pitfalls": [],
+    "searchKeywords": ["poisson MGF", "poisson moment generating function", "lambda"],
+    "relatedIds": ["dist_poisson_mean_variance"],
+    "references": ["Hogg, R., McKean, J., Craig, A. (2019). Introduction to Mathematical Statistics. 8th ed."],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "M_X(t) = \\mathbb{E}[e^{tX}] = \\sum_{k=0}^{\\infty} e^{tk} \\cdot \\frac{\\lambda^k e^{-\\lambda}}{k!}",
+        "justification": "Definition of MGF for Discrete RV",
+        "explanation": "For a discrete random variable, E[g(X)] = Σ g(k) P(X=k). Here g(k) = e^{tk} and P(X=k) = e^{-λ}λ^k/k!.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 2,
+        "expression": "= e^{-\\lambda} \\sum_{k=0}^{\\infty} \\frac{(\\lambda e^t)^k}{k!}",
+        "justification": "Rearranging the Series",
+        "explanation": "Factor out e^{-λ} and combine e^{tk}λ^k = (λe^t)^k.",
+        "ruleId": "log_power",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 3,
+        "expression": "= e^{-\\lambda} \\cdot e^{\\lambda e^t}",
+        "justification": "Taylor Series of Exponential",
+        "explanation": "The series Σ x^k/k! = e^x for x = λe^t. This is the Maclaurin series of the exponential function.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": ["Recall: e^x = Σ_{k=0}^∞ x^k / k! for all x ∈ ℝ."],
+        "substeps": []
+      },
+      {
+        "stepNumber": 4,
+        "expression": "= \\exp\\!\\left(\\lambda e^t - \\lambda\\right) = \\exp\\!\\left(\\lambda(e^t - 1)\\right)",
+        "justification": "Combining Exponentials",
+        "explanation": "e^{-λ} · e^{λe^t} = e^{λe^t - λ} = e^{λ(e^t - 1)} using the product rule for exponentials.",
+        "ruleId": "exp_sum",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      }
+    ],
+    "examples": []
+  },
+  {
+    "id": "dist_exponential_memoryless",
+    "title": "Memoryless Property of the Exponential Distribution",
+    "topic": "distribution_theory",
+    "subtopic": "Exponential Distribution",
+    "difficulty": "undergraduate",
+    "statement": "\\text{If } X \\sim \\text{Exp}(\\lambda), \\text{ then } P(X > s + t \\mid X > s) = P(X > t)",
+    "conclusion": "P(X > s + t \\mid X > s) = P(X > t)",
+    "tags": ["exponential", "memoryless", "survival function"],
+    "assumptions": ["X \\sim \\text{Exp}(\\lambda)", "\\lambda > 0", "s, t \\geq 0"],
+    "intuition": "The exponential distribution has no memory: given survival past time s, the remaining lifetime has the same distribution as starting from scratch.",
+    "pitfalls": ["This property is unique to the exponential among continuous distributions."],
+    "searchKeywords": ["memoryless", "exponential distribution", "survival", "geometric"],
+    "relatedIds": [],
+    "references": [],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "P(X > s + t \\mid X > s) = \\frac{P(X > s + t \\text{ and } X > s)}{P(X > s)} = \\frac{P(X > s + t)}{P(X > s)}",
+        "justification": "Definition of Conditional Probability",
+        "explanation": "Since s+t > s, the event {X > s+t} implies {X > s}, so their intersection is {X > s+t}.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 2,
+        "expression": "= \\frac{e^{-\\lambda(s+t)}}{e^{-\\lambda s}}",
+        "justification": "Survival Function of Exp(λ)",
+        "explanation": "For X ~ Exp(λ), the survival function is P(X > x) = e^{-λx}.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 3,
+        "expression": "= e^{-\\lambda(s+t) + \\lambda s} = e^{-\\lambda t}",
+        "justification": "Laws of Exponents",
+        "explanation": "e^{-λ(s+t)} / e^{-λs} = e^{-λ(s+t)-(-λs)} = e^{-λt}.",
+        "ruleId": "power_product",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 4,
+        "expression": "= P(X > t)",
+        "justification": "Survival Function Recognition",
+        "explanation": "e^{-λt} is exactly P(X > t) for an Exp(λ) random variable.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      }
+    ],
+    "examples": []
+  }
+]

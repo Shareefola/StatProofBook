@@ -1,0 +1,65 @@
+[
+  {
+    "id": "regression_gauss_markov",
+    "title": "Gauss-Markov Theorem",
+    "topic": "regression",
+    "subtopic": "Ordinary Least Squares",
+    "difficulty": "advanced_undergraduate",
+    "statement": "\\text{Under } \\mathbb{E}[\\boldsymbol{\\varepsilon}]=\\mathbf{0},\\, \\mathrm{Var}(\\boldsymbol{\\varepsilon})=\\sigma^2 I,\\text{ OLS is BLUE}",
+    "conclusion": "\\hat{\\boldsymbol{\\beta}}_{\\text{OLS}} \\text{ is the Best Linear Unbiased Estimator (BLUE)}",
+    "tags": ["Gauss-Markov", "BLUE", "OLS", "efficiency", "unbiased"],
+    "assumptions": [
+      "\\mathbb{E}[\\boldsymbol{\\varepsilon} \\mid X] = \\mathbf{0}",
+      "\\mathrm{Var}(\\boldsymbol{\\varepsilon} \\mid X) = \\sigma^2 I_n",
+      "X \\text{ has full column rank}"
+    ],
+    "intuition": "Among all linear unbiased estimators of β, OLS has the smallest variance for every linear combination cᵀβ.",
+    "pitfalls": ["BLUE does not require normality of errors — only spherical errors.", "If errors are heteroskedastic or correlated, GLS is more efficient."],
+    "searchKeywords": ["Gauss-Markov", "BLUE", "best linear unbiased", "OLS efficiency"],
+    "relatedIds": ["regression_ols_estimator"],
+    "references": ["Greene, W. H. (2018). Econometric Analysis. 8th ed."],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "\\tilde{\\boldsymbol{\\beta}} = C\\mathbf{y}, \\quad C = (X^\\top X)^{-1}X^\\top + D",
+        "justification": "General Linear Estimator",
+        "explanation": "Any linear estimator of β can be written as Cy for some matrix C. Write C = (XᵀX)⁻¹Xᵀ + D where D captures the deviation from OLS.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 2,
+        "expression": "\\mathbb{E}[\\tilde{\\boldsymbol{\\beta}}] = CX\\boldsymbol{\\beta} = \\boldsymbol{\\beta} \\implies DX = 0",
+        "justification": "Unbiasedness Constraint",
+        "explanation": "E[Cy] = CXβ = β requires CX = I, i.e., [(XᵀX)⁻¹Xᵀ + D]X = I + DX = I, so DX = 0.",
+        "ruleId": "expectation_constant",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 3,
+        "expression": "\\mathrm{Var}(\\tilde{\\boldsymbol{\\beta}}) = \\sigma^2 CC^\\top = \\sigma^2\\left[(X^\\top X)^{-1} + DD^\\top\\right]",
+        "justification": "Variance of Linear Estimator",
+        "explanation": "Var(Cy) = C·Var(y)·Cᵀ = σ²CCᵀ. Expanding CC ᵀ using C = (XᵀX)⁻¹Xᵀ + D and DX=0 yields (XᵀX)⁻¹ + DDᵀ.",
+        "ruleId": "variance_linear",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 4,
+        "expression": "\\mathrm{Var}(\\tilde{\\boldsymbol{\\beta}}) - \\mathrm{Var}(\\hat{\\boldsymbol{\\beta}}_{\\text{OLS}}) = \\sigma^2 DD^\\top \\succeq 0",
+        "justification": "Positive Semidefiniteness",
+        "explanation": "DDᵀ is always positive semidefinite for any matrix D. Therefore Var(β̃) ≥ Var(β̂_OLS) in the Loewner order, with equality only when D=0.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      }
+    ],
+    "examples": []
+  }
+]

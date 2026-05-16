@@ -1,0 +1,46 @@
+# ── Android / Gradle ──────────────────────────────────────────────────────────
+.gradle/
+build/
+**/build/
+local.properties
+*.iml
+.idea/
+*.hprof
+.caches/
+**/generated/
+**/.externalNativeBuild/
+**/.cxx/
+captures/
+
+# ── Keystore files — NEVER commit these ───────────────────────────────────────
+*.jks
+*.keystore
+*-release.jks
+*-release.keystore
+
+# ── Android SDK ───────────────────────────────────────────────────────────────
+/sdk.dir
+
+# ── Test results ──────────────────────────────────────────────────────────────
+**/test-results/
+**/reports/
+
+# ── KaTeX assets (downloaded by script, not committed) ────────────────────────
+app/src/main/assets/katex/fonts/
+app/src/main/assets/katex/katex.min.js
+app/src/main/assets/katex/katex.min.css
+
+# ── macOS / Linux ─────────────────────────────────────────────────────────────
+.DS_Store
+*.swp
+*~
+
+# ── IntelliJ / Android Studio ─────────────────────────────────────────────────
+*.iws
+.idea/
+out/
+nbactions.xml
+
+# ── Environment files ─────────────────────────────────────────────────────────
+.env
+.env.local

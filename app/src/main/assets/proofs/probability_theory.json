@@ -1,0 +1,212 @@
+[
+  {
+    "id": "prob_bayes_theorem",
+    "title": "Bayes' Theorem",
+    "topic": "probability_theory",
+    "subtopic": "Conditional Probability",
+    "difficulty": "undergraduate",
+    "statement": "P(A \\mid B) = \\frac{P(B \\mid A)\\, P(A)}{P(B)}, \\quad P(B) > 0",
+    "conclusion": "P(A \\mid B) = \\frac{P(B \\mid A)\\, P(A)}{P(B)}",
+    "tags": ["bayes", "conditional probability", "probability"],
+    "assumptions": [
+      "P(B) > 0",
+      "A and B are events in a probability space (\\Omega, \\mathcal{F}, P)"
+    ],
+    "intuition": "Bayes' theorem lets us reverse conditional probabilities — if we know P(B|A), we can find P(A|B). It is the foundation of Bayesian inference.",
+    "pitfalls": [
+      "P(B) must be strictly positive; conditioning on a zero-probability event is undefined.",
+      "Bayes' theorem does not imply causation between A and B."
+    ],
+    "searchKeywords": ["bayes", "conditional", "posterior", "prior", "likelihood", "inverse probability"],
+    "relatedIds": ["prob_law_total_probability", "bayes_posterior_update"],
+    "references": [
+      "Bayes, T. (1763). An essay towards solving a problem in the doctrine of chances.",
+      "Kolmogorov, A. N. (1933). Grundbegriffe der Wahrscheinlichkeitsrechnung."
+    ],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "P(A \\cap B) = P(A \\mid B)\\, P(B)",
+        "justification": "Definition of Conditional Probability",
+        "explanation": "By definition, P(A|B) = P(A∩B)/P(B), so rearranging gives P(A∩B) = P(A|B)·P(B).",
+        "ruleId": "definition",
+        "assumptions": ["P(B) > 0"],
+        "hints": ["The conditional probability P(A|B) represents the probability of A given that B has occurred."],
+        "substeps": []
+      },
+      {
+        "stepNumber": 2,
+        "expression": "P(A \\cap B) = P(B \\mid A)\\, P(A)",
+        "justification": "Symmetry of Intersection",
+        "explanation": "Since A∩B = B∩A, applying the same definition with roles of A and B swapped gives P(B∩A) = P(B|A)·P(A).",
+        "ruleId": "definition",
+        "assumptions": ["P(A) > 0"],
+        "hints": ["Intersection is commutative: A∩B and B∩A describe the same event."],
+        "substeps": []
+      },
+      {
+        "stepNumber": 3,
+        "expression": "P(A \\mid B)\\, P(B) = P(B \\mid A)\\, P(A)",
+        "justification": "Equating Both Expressions",
+        "explanation": "Steps 1 and 2 both equal P(A∩B), so the right-hand sides are equal.",
+        "ruleId": "add_zero",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 4,
+        "expression": "P(A \\mid B) = \\frac{P(B \\mid A)\\, P(A)}{P(B)}",
+        "justification": "Division by P(B)",
+        "explanation": "Dividing both sides of step 3 by P(B) > 0 isolates P(A|B). This is Bayes' theorem.",
+        "ruleId": "mul_one",
+        "assumptions": ["P(B) > 0"],
+        "hints": ["We can divide by P(B) because it is strictly positive by assumption."],
+        "substeps": []
+      }
+    ],
+    "examples": [
+      {
+        "title": "Medical Test Example",
+        "setup": "A disease has 1% prevalence. A test is 99% sensitive (P(+|D)=0.99) and 95% specific (P(-|\\bar{D})=0.95). Given a positive test, what is P(D|+)?",
+        "solution": "P(D|+) = (0.99 × 0.01) / (0.99×0.01 + 0.05×0.99) ≈ 0.167. Despite a positive test, only ~17% chance of disease — the base rate matters enormously.",
+        "distribution": ""
+      }
+    ]
+  },
+  {
+    "id": "prob_law_total_probability",
+    "title": "Law of Total Probability",
+    "topic": "probability_theory",
+    "subtopic": "Conditional Probability",
+    "difficulty": "undergraduate",
+    "statement": "P(B) = \\sum_{i=1}^{n} P(B \\mid A_i)\\, P(A_i)",
+    "conclusion": "P(B) = \\sum_{i=1}^{n} P(B \\mid A_i)\\, P(A_i)",
+    "tags": ["total probability", "partition", "marginal probability"],
+    "assumptions": [
+      "\\{A_1, A_2, \\ldots, A_n\\} is a partition of \\Omega",
+      "P(A_i) > 0 for all i",
+      "B \\subseteq \\Omega"
+    ],
+    "intuition": "To compute P(B) when it is hard to measure directly, we condition on a partition of the sample space and sum up the weighted conditional probabilities.",
+    "pitfalls": ["The partition must be exhaustive and mutually exclusive."],
+    "searchKeywords": ["total probability", "marginalisation", "partition", "law of total probability"],
+    "relatedIds": ["prob_bayes_theorem"],
+    "references": ["Feller, W. (1968). An Introduction to Probability Theory and Its Applications. Vol. 1."],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "B = B \\cap \\Omega = B \\cap \\left(\\bigcup_{i=1}^{n} A_i\\right)",
+        "justification": "Partition Definition",
+        "explanation": "Since {A_i} partitions Ω, their union equals Ω. Intersecting B with Ω leaves B unchanged.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 2,
+        "expression": "B = \\bigcup_{i=1}^{n} (B \\cap A_i)",
+        "justification": "Distributive Law of Sets",
+        "explanation": "Intersection distributes over union: B ∩ (∪ A_i) = ∪ (B ∩ A_i).",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 3,
+        "expression": "P(B) = \\sum_{i=1}^{n} P(B \\cap A_i)",
+        "justification": "Countable Additivity",
+        "explanation": "The sets B∩A_i are mutually disjoint (since the A_i partition Ω), so countable additivity of probability gives P(∪(B∩A_i)) = Σ P(B∩A_i).",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": ["Mutual disjointness follows from the partition property of {A_i}."],
+        "substeps": []
+      },
+      {
+        "stepNumber": 4,
+        "expression": "P(B) = \\sum_{i=1}^{n} P(B \\mid A_i)\\, P(A_i)",
+        "justification": "Definition of Conditional Probability",
+        "explanation": "Applying P(B∩A_i) = P(B|A_i)·P(A_i) to each term completes the proof.",
+        "ruleId": "definition",
+        "assumptions": ["P(A_i) > 0"],
+        "hints": [],
+        "substeps": []
+      }
+    ],
+    "examples": []
+  },
+  {
+    "id": "prob_expectation_linearity",
+    "title": "Linearity of Expectation",
+    "topic": "probability_theory",
+    "subtopic": "Expected Value",
+    "difficulty": "undergraduate",
+    "statement": "\\mathbb{E}[aX + bY] = a\\,\\mathbb{E}[X] + b\\,\\mathbb{E}[Y]",
+    "conclusion": "\\mathbb{E}[aX + bY] = a\\,\\mathbb{E}[X] + b\\,\\mathbb{E}[Y]",
+    "tags": ["expectation", "linearity", "expected value"],
+    "assumptions": [
+      "X and Y are random variables with finite expectations",
+      "a, b \\in \\mathbb{R}"
+    ],
+    "intuition": "The expected value of a linear combination is the linear combination of expected values — no independence assumption is needed.",
+    "pitfalls": ["Linearity holds regardless of dependence between X and Y."],
+    "searchKeywords": ["linearity of expectation", "expected value", "linear combination", "E[aX+bY]"],
+    "relatedIds": ["prob_variance_linear_transform", "prob_covariance_bilinearity"],
+    "references": ["Durrett, R. (2019). Probability: Theory and Examples. 5th ed."],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "\\mathbb{E}[aX + bY] = \\int_{-\\infty}^{\\infty}\\int_{-\\infty}^{\\infty} (ax + by)\\, f_{X,Y}(x, y)\\, dx\\, dy",
+        "justification": "Definition of Expectation (Continuous Case)",
+        "explanation": "For jointly continuous random variables, expectation is defined as the double integral of the value times the joint density.",
+        "ruleId": "definition",
+        "assumptions": ["X, Y jointly continuous with density f_{X,Y}"],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 2,
+        "expression": "= \\int\\int ax\\, f_{X,Y}\\, dx\\, dy + \\int\\int by\\, f_{X,Y}\\, dx\\, dy",
+        "justification": "Linearity of Integration",
+        "explanation": "Splitting the integrand (ax + by) into two terms and separating the integrals (valid by Fubini's theorem given finite expectations).",
+        "ruleId": "expectation_linearity_sum",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 3,
+        "expression": "= a\\int x\\left(\\int f_{X,Y}\\, dy\\right) dx + b\\int y\\left(\\int f_{X,Y}\\, dx\\right) dy",
+        "justification": "Factoring Constants and Fubini's Theorem",
+        "explanation": "Constants a and b factor out. Integrating f_{X,Y} over one variable yields the marginal density of the other.",
+        "ruleId": "expectation_linearity_constant",
+        "assumptions": [],
+        "hints": ["∫f_{X,Y}(x,y) dy = f_X(x) (the marginal density of X)"],
+        "substeps": []
+      },
+      {
+        "stepNumber": 4,
+        "expression": "= a\\int x\\, f_X(x)\\, dx + b\\int y\\, f_Y(y)\\, dy",
+        "justification": "Marginalisation",
+        "explanation": "Integrating the joint density over y gives the marginal density of X, and vice versa.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 5,
+        "expression": "= a\\,\\mathbb{E}[X] + b\\,\\mathbb{E}[Y]",
+        "justification": "Definition of Expectation",
+        "explanation": "Each remaining integral is precisely the definition of E[X] and E[Y] respectively.",
+        "ruleId": "expectation_constant",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      }
+    ],
+    "examples": []
+  }
+]

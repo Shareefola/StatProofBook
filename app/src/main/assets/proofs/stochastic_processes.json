@@ -1,0 +1,31 @@
+[
+  {
+    "id": "stochastic_processes_placeholder_1",
+    "title": "Stochastic Processes — Key Result 1",
+    "topic": "stochastic_processes",
+    "subtopic": "Foundational Results",
+    "difficulty": "undergraduate",
+    "statement": "\text{See derivation steps for the full statement.}",
+    "conclusion": "\text{Q.E.D.}",
+    "tags": ["stochastic processes"],
+    "assumptions": ["Standard regularity conditions apply."],
+    "intuition": "This is a foundational result in stochastic processes. More proofs will be added in future releases.",
+    "pitfalls": [],
+    "searchKeywords": ["stochastic processes"],
+    "relatedIds": [],
+    "references": [],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "\text{This topic's full proof set is being expanded.}",
+        "justification": "Placeholder",
+        "explanation": "Full derivations for this topic will be populated in the next dataset release. The proof engine and all infrastructure are complete.",
+        "ruleId": "axiom",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      }
+    ],
+    "examples": []
+  }
+]

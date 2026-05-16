@@ -1,0 +1,163 @@
+[
+  {
+    "id": "bayes_conjugate_normal",
+    "title": "Bayesian Conjugate Update: Normal-Normal",
+    "topic": "bayesian",
+    "subtopic": "Conjugate Priors",
+    "difficulty": "graduate",
+    "statement": "\\text{If } X_i \\mid \\mu \\sim \\mathcal{N}(\\mu, \\sigma^2) \\text{ and } \\mu \\sim \\mathcal{N}(\\mu_0, \\tau^2), \\text{ then } \\mu \\mid \\mathbf{X} \\sim \\mathcal{N}(\\mu_n, \\tau_n^2)",
+    "conclusion": "\\mu_n = \\frac{\\tau^{-2}\\mu_0 + n\\sigma^{-2}\\bar{X}}{\\tau^{-2} + n\\sigma^{-2}}, \\quad \\tau_n^{-2} = \\tau^{-2} + n\\sigma^{-2}",
+    "tags": ["bayesian", "conjugate prior", "normal prior", "posterior", "gaussian"],
+    "assumptions": [
+      "X_1,\\ldots,X_n \\mid \\mu \\overset{\\text{i.i.d.}}{\\sim} \\mathcal{N}(\\mu, \\sigma^2), \\; \\sigma^2 \\text{ known}",
+      "\\mu \\sim \\mathcal{N}(\\mu_0, \\tau^2)"
+    ],
+    "intuition": "The posterior mean is a precision-weighted average of the prior mean and the data mean. More data (large n) pulls the posterior toward x̄; strong prior (small τ²) keeps it near μ₀.",
+    "pitfalls": ["σ² is assumed known here. If unknown, a Normal-InverseGamma conjugate is needed."],
+    "searchKeywords": ["conjugate normal", "normal prior", "posterior mean", "bayesian update", "precision"],
+    "relatedIds": ["bayes_posterior_update"],
+    "references": ["Gelman, A. et al. (2013). Bayesian Data Analysis. 3rd ed. CRC Press."],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "p(\\mu \\mid \\mathbf{x}) \\propto p(\\mathbf{x} \\mid \\mu)\\, p(\\mu)",
+        "justification": "Bayes' Theorem (proportional form)",
+        "explanation": "By Bayes' theorem, the posterior is proportional to likelihood × prior. We drop the normalising constant p(x) as it does not depend on μ.",
+        "ruleId": "bayes_theorem",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 2,
+        "expression": "\\propto \\exp\\!\\left(-\\frac{n}{2\\sigma^2}(\\bar{x} - \\mu)^2\\right) \\cdot \\exp\\!\\left(-\\frac{1}{2\\tau^2}(\\mu - \\mu_0)^2\\right)",
+        "justification": "Substituting Likelihood and Prior",
+        "explanation": "The likelihood for n i.i.d. normals factors, and after dropping constants in x, depends on μ only through (x̄-μ)². The prior gives a quadratic in (μ-μ₀).",
+        "ruleId": "log_product",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 3,
+        "expression": "\\propto \\exp\\!\\left(-\\frac{1}{2}\\left[\\frac{n}{\\sigma^2}(\\bar{x}-\\mu)^2 + \\frac{1}{\\tau^2}(\\mu-\\mu_0)^2\\right]\\right)",
+        "justification": "Combining the Exponents",
+        "explanation": "Combining both exponentials into a single exp of a sum.",
+        "ruleId": "exp_sum",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 4,
+        "expression": "\\frac{n}{\\sigma^2}(\\bar{x}-\\mu)^2 + \\frac{1}{\\tau^2}(\\mu-\\mu_0)^2 = \\tau_n^{-2}(\\mu - \\mu_n)^2 + C",
+        "justification": "Complete the Square in μ",
+        "explanation": "Expanding and collecting terms in μ: the coefficient of μ² is n/σ² + 1/τ² = τₙ⁻². The coefficient of μ is -2(nx̄/σ² + μ₀/τ²) = -2τₙ⁻²μₙ. C is a constant in μ.",
+        "ruleId": "complete_the_square",
+        "assumptions": [],
+        "hints": [
+          "Coefficient of μ²: n/σ² + 1/τ² = τₙ⁻²",
+          "Coefficient of -2μ: nx̄/σ² + μ₀/τ², so μₙ = (nx̄/σ² + μ₀/τ²)/τₙ⁻²"
+        ],
+        "substeps": []
+      },
+      {
+        "stepNumber": 5,
+        "expression": "p(\\mu \\mid \\mathbf{x}) \\propto \\exp\\!\\left(-\\frac{1}{2\\tau_n^2}(\\mu - \\mu_n)^2\\right)",
+        "justification": "Recognising Normal Kernel",
+        "explanation": "The posterior is proportional to a normal kernel in μ with mean μₙ and variance τₙ². The constant C contributes only to the normalising constant.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 6,
+        "expression": "\\mu \\mid \\mathbf{X} \\sim \\mathcal{N}(\\mu_n, \\tau_n^2), \\quad \\mu_n = \\frac{\\tau^{-2}\\mu_0 + n\\sigma^{-2}\\bar{X}}{\\tau^{-2} + n\\sigma^{-2}}, \\quad \\tau_n^{-2} = \\tau^{-2} + n\\sigma^{-2}",
+        "justification": "Posterior Identification",
+        "explanation": "By uniqueness of the normal distribution, the posterior is N(μₙ, τₙ²). The posterior precision τₙ⁻² equals prior precision plus data precision n/σ².",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      }
+    ],
+    "examples": []
+  },
+  {
+    "id": "regression_ols_estimator",
+    "title": "OLS Estimator in Linear Regression",
+    "topic": "regression",
+    "subtopic": "Ordinary Least Squares",
+    "difficulty": "undergraduate",
+    "statement": "\\text{In the model } \\mathbf{y} = X\\boldsymbol{\\beta} + \\boldsymbol{\\varepsilon}, \\text{ the OLS estimator is } \\hat{\\boldsymbol{\\beta}} = (X^{\\top}X)^{-1}X^{\\top}\\mathbf{y}",
+    "conclusion": "\\hat{\\boldsymbol{\\beta}}_{\\text{OLS}} = (X^{\\top}X)^{-1}X^{\\top}\\mathbf{y}",
+    "tags": ["OLS", "linear regression", "least squares", "normal equations", "matrix"],
+    "assumptions": [
+      "\\mathbf{y} = X\\boldsymbol{\\beta} + \\boldsymbol{\\varepsilon} \\in \\mathbb{R}^n",
+      "X \\in \\mathbb{R}^{n \\times p} \\text{ has full column rank}",
+      "\\boldsymbol{\\varepsilon} \\sim \\mathcal{N}(\\mathbf{0}, \\sigma^2 I)"
+    ],
+    "intuition": "OLS minimises the sum of squared residuals. The solution is found by setting the gradient to zero — the 'normal equations' — and solving for β.",
+    "pitfalls": [
+      "(XᵀX) must be invertible — requires X to have full column rank (no multicollinearity).",
+      "OLS is BLUE under Gauss-Markov but requires additional assumptions for inference."
+    ],
+    "searchKeywords": ["OLS", "least squares", "normal equations", "beta hat", "linear regression", "matrix"],
+    "relatedIds": ["regression_gauss_markov", "regression_ols_unbiasedness"],
+    "references": ["Greene, W. H. (2018). Econometric Analysis. 8th ed."],
+    "derivationSteps": [
+      {
+        "stepNumber": 1,
+        "expression": "\\text{RSS}(\\boldsymbol{\\beta}) = \\|\\mathbf{y} - X\\boldsymbol{\\beta}\\|^2 = (\\mathbf{y} - X\\boldsymbol{\\beta})^{\\top}(\\mathbf{y} - X\\boldsymbol{\\beta})",
+        "justification": "Objective Function",
+        "explanation": "We minimise the residual sum of squares — the squared Euclidean distance between y and the fitted values Xβ.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 2,
+        "expression": "= \\mathbf{y}^{\\top}\\mathbf{y} - 2\\boldsymbol{\\beta}^{\\top}X^{\\top}\\mathbf{y} + \\boldsymbol{\\beta}^{\\top}X^{\\top}X\\boldsymbol{\\beta}",
+        "justification": "Expanding the Quadratic Form",
+        "explanation": "Expanding (y-Xβ)ᵀ(y-Xβ) using distributivity of matrix transpose and the scalar identity xᵀy = yᵀx.",
+        "ruleId": "transpose_product",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 3,
+        "expression": "\\frac{\\partial \\text{RSS}}{\\partial \\boldsymbol{\\beta}} = -2X^{\\top}\\mathbf{y} + 2X^{\\top}X\\boldsymbol{\\beta} = \\mathbf{0}",
+        "justification": "Matrix Gradient and First-Order Condition",
+        "explanation": "Using matrix calculus: ∂(βᵀAβ)/∂β = 2Aβ (for symmetric A=XᵀX) and ∂(bᵀβ)/∂β = b. Setting gradient to zero.",
+        "ruleId": "definition",
+        "assumptions": [],
+        "hints": ["XᵀX is symmetric positive definite when X has full rank."],
+        "substeps": []
+      },
+      {
+        "stepNumber": 4,
+        "expression": "X^{\\top}X\\,\\hat{\\boldsymbol{\\beta}} = X^{\\top}\\mathbf{y}",
+        "justification": "Normal Equations",
+        "explanation": "Rearranging the first-order condition gives the normal equations. Any solution minimises RSS.",
+        "ruleId": "mul_one",
+        "assumptions": [],
+        "hints": [],
+        "substeps": []
+      },
+      {
+        "stepNumber": 5,
+        "expression": "\\hat{\\boldsymbol{\\beta}} = (X^{\\top}X)^{-1}X^{\\top}\\mathbf{y}",
+        "justification": "Solving the Normal Equations",
+        "explanation": "Since XᵀX is invertible (X has full column rank), premultiplying both sides by (XᵀX)⁻¹ gives the unique OLS estimator.",
+        "ruleId": "definition",
+        "assumptions": ["X has full column rank so (XᵀX) is invertible"],
+        "hints": [],
+        "substeps": []
+      }
+    ],
+    "examples": []
+  }
+]
