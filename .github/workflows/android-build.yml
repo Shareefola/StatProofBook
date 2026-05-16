@@ -13,18 +13,20 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Fix 1: opt into Node.js 24 to silence deprecation warnings across all actions
 env:
   JAVA_VERSION: '17'
   JAVA_DISTRIBUTION: 'temurin'
   GRADLE_OPTS: '-Dorg.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g -Dfile.encoding=UTF-8'
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+
   # ── Static Analysis ───────────────────────────────────────────────────────────
   static-analysis:
     name: Static Analysis
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,36 +39,47 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRIBUTION }}
 
+      # Fix 2: gradle/actions/setup-gradle v3 -> v4 (Node 24 compatible)
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-home-cache-cleanup: true
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      # Fix 3: download wrapper jar if not committed, then make gradlew executable
+      - name: Bootstrap Gradle wrapper
+        run: |
+          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            echo "gradle-wrapper.jar not found — downloading from Gradle releases..."
+            mkdir -p gradle/wrapper
+            curl -sL \
+              "https://github.com/gradle/gradle/raw/v8.9.0/gradle/wrapper/gradle-wrapper.jar" \
+              -o gradle/wrapper/gradle-wrapper.jar \
+              --retry 3 --retry-delay 2
+            echo "Downloaded successfully."
+          fi
+          chmod +x gradlew
+          echo "gradlew is ready."
 
       - name: Run ktlint
         run: ./gradlew ktlintCheck --continue
-        continue-on-error: false
 
       - name: Run detekt
         run: ./gradlew detekt --continue
-        continue-on-error: false
 
       - name: Upload detekt reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: detekt-reports
-          path: '**/build/reports/detekt/**'
+          path: '**/build/reports/detekt/'
           retention-days: 7
+          if-no-files-found: warn
 
   # ── Unit Tests ────────────────────────────────────────────────────────────────
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -78,25 +91,30 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Bootstrap Gradle wrapper
+        run: |
+          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            mkdir -p gradle/wrapper
+            curl -sL \
+              "https://github.com/gradle/gradle/raw/v8.9.0/gradle/wrapper/gradle-wrapper.jar" \
+              -o gradle/wrapper/gradle-wrapper.jar \
+              --retry 3 --retry-delay 2
+          fi
+          chmod +x gradlew
 
       - name: Run unit tests
         run: ./gradlew test --continue
-
-      - name: Generate test reports
-        if: always()
-        run: ./gradlew testReport || true
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-results
-          path: '**/build/reports/tests/**'
+          path: '**/build/reports/tests/'
           retention-days: 7
+          if-no-files-found: warn
 
       - name: Upload test XML results
         if: always()
@@ -105,13 +123,13 @@ jobs:
           name: unit-test-xml
           path: '**/build/test-results/**/*.xml'
           retention-days: 7
+          if-no-files-found: warn
 
   # ── Android Lint ──────────────────────────────────────────────────────────────
   android-lint:
     name: Android Lint
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -123,21 +141,35 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Bootstrap Gradle wrapper
+        run: |
+          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            mkdir -p gradle/wrapper
+            curl -sL \
+              "https://github.com/gradle/gradle/raw/v8.9.0/gradle/wrapper/gradle-wrapper.jar" \
+              -o gradle/wrapper/gradle-wrapper.jar \
+              --retry 3 --retry-delay 2
+          fi
+          chmod +x gradlew
 
       - name: Run Android lint
-        run: ./gradlew lint
+        run: ./gradlew :app:lint
 
+      # Fix 4: AGP 8.x writes lint output to these exact paths — wildcard was wrong
       - name: Upload lint reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: lint-reports
-          path: '**/build/reports/lint-results*'
+          path: |
+            app/build/reports/lint-results-debug.html
+            app/build/reports/lint-results-debug.xml
+            app/build/reports/lint-results-release.html
+            app/build/reports/lint-results-release.xml
           retention-days: 7
+          if-no-files-found: warn
 
   # ── Release Build & Sign ──────────────────────────────────────────────────────
   build-release:
@@ -145,7 +177,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs: [static-analysis, unit-tests, android-lint]
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -157,12 +188,20 @@ jobs:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-home-cache-cleanup: true
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Bootstrap Gradle wrapper
+        run: |
+          if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
+            mkdir -p gradle/wrapper
+            curl -sL \
+              "https://github.com/gradle/gradle/raw/v8.9.0/gradle/wrapper/gradle-wrapper.jar" \
+              -o gradle/wrapper/gradle-wrapper.jar \
+              --retry 3 --retry-delay 2
+          fi
+          chmod +x gradlew
 
       - name: Decode keystore from GitHub Secret
         env:
@@ -172,9 +211,9 @@ jobs:
             echo "Decoding keystore..."
             echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/statproof-release.jks"
             echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/statproof-release.jks" >> $GITHUB_ENV
-            echo "Keystore decoded successfully."
+            echo "Keystore decoded."
           else
-            echo "WARNING: ANDROID_KEYSTORE_BASE64 secret not set. Building unsigned APK."
+            echo "WARNING: ANDROID_KEYSTORE_BASE64 not set — building unsigned APK."
           fi
 
       - name: Build release APK
@@ -184,7 +223,7 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Verify APK was produced
+      - name: Verify APK exists
         run: |
           APK_PATH=$(find . -name "*.apk" -path "*/release/*" | head -1)
           if [ -z "$APK_PATH" ]; then
@@ -192,24 +231,14 @@ jobs:
             exit 1
           fi
           echo "APK_PATH=$APK_PATH" >> $GITHUB_ENV
-          echo "Found APK: $APK_PATH"
+          echo "APK found: $APK_PATH"
           ls -lh "$APK_PATH"
 
-      - name: Align APK (zipalign)
-        run: |
-          ZIPALIGN=$(find $ANDROID_HOME -name "zipalign" | head -1)
-          if [ -n "$ZIPALIGN" ] && [ -n "$APK_PATH" ]; then
-            ALIGNED_APK="${APK_PATH%.apk}-aligned.apk"
-            "$ZIPALIGN" -v 4 "$APK_PATH" "$ALIGNED_APK" || true
-            echo "ALIGNED_APK=$ALIGNED_APK" >> $GITHUB_ENV
-          fi
-
-      - name: Upload unsigned/signed release APK
+      - name: Upload release APK
         uses: actions/upload-artifact@v4
         with:
           name: statproof-release-apk
-          path: |
-            **/build/outputs/apk/release/*.apk
+          path: app/build/outputs/apk/release/*.apk
           retention-days: 30
           if-no-files-found: error
 
@@ -218,15 +247,17 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-reports
-          path: '**/build/reports/**'
+          path: '**/build/reports/'
           retention-days: 7
+          if-no-files-found: warn
 
       - name: Secure cleanup of keystore
         if: always()
         run: |
           if [ -f "$RUNNER_TEMP/statproof-release.jks" ]; then
-            shred -u "$RUNNER_TEMP/statproof-release.jks" 2>/dev/null || rm -f "$RUNNER_TEMP/statproof-release.jks"
-            echo "Keystore file securely deleted."
+            shred -u "$RUNNER_TEMP/statproof-release.jks" 2>/dev/null \
+              || rm -f "$RUNNER_TEMP/statproof-release.jks"
+            echo "Keystore securely deleted."
           fi
 
   # ── Summary ───────────────────────────────────────────────────────────────────
@@ -235,21 +266,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: [static-analysis, unit-tests, android-lint, build-release]
     if: always()
-
     steps:
-      - name: Report CI result
+      - name: Write summary
         run: |
           echo "## StatProof CI Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| Static Analysis | ${{ needs.static-analysis.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Unit Tests | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Android Lint | ${{ needs.android-lint.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Release Build | ${{ needs.build-release.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Unit Tests      | ${{ needs.unit-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Android Lint    | ${{ needs.android-lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release Build   | ${{ needs.build-release.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           if [[ "${{ needs.build-release.result }}" == "success" ]]; then
-            echo "✅ **Release APK built successfully.** Download from artifacts." >> $GITHUB_STEP_SUMMARY
+            echo "✅ **Release APK built.** Download from the Artifacts tab." >> $GITHUB_STEP_SUMMARY
           else
-            echo "❌ **Build failed. See job logs for details.**" >> $GITHUB_STEP_SUMMARY
+            echo "❌ **Build failed.** Check individual job logs above." >> $GITHUB_STEP_SUMMARY
           fi
